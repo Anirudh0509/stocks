@@ -19,8 +19,6 @@ router.post ('/createSecurity', async (req, res) => {
 
 try {
 
-  console.log("The request payload", req.body);
-
   let { ticker, avg_buy_price, shares } = req.body;
 
   let security = await portfolio.create(req.body);
@@ -39,7 +37,7 @@ try {
   
   console.log("New security entered in a portfolio", security);
 
-  res.send('Success');
+  res.send('Success, New security entered in a portfolio');
 
 } catch (error) {
   console.log("error",error);
@@ -54,8 +52,6 @@ router.get('/portfolio', async (_req, res) => {
   try {
     
     let portfolio = await fetchPortfolio();
-
-    console.log("The protfolio we got", portfolio);
 
     res.send(portfolio);
 
@@ -87,7 +83,6 @@ const fetchPortfolio = async () => {
 router.post('/placeTrade', async (req, res) => {
 
   let { ticker, buy_price, new_shares } = req.body;
-  console.log("payload", req.body);
 
   try {
     
@@ -126,8 +121,6 @@ const updateTrade = async ({ ticker, buy_price, new_shares }) => {
   avg_buy_price = +(((avg_buy_price * shares) + (buy_price * new_shares))/(shares + new_shares)).toFixed(2);
   shares += new_shares;
 
-  console.log("the db data", data);
-
   await portfolio.update({ ticker },  { $set : { avg_buy_price, shares }});
 
   //DROPPING STALE CACHE
@@ -149,15 +142,12 @@ const updateTrade = async ({ ticker, buy_price, new_shares }) => {
 router.post('/sellTrade', async (req, res) => {
 
   let { ticker, selling_shares } = req.body;
-  console.log("Payload", req.body);
 
   try {
     
     let trade = await sellTrade({ ticker, selling_shares });
 
     let { shares, result } = trade;
-
-    console.log("Trade value", trade);
 
     res.send(`After selling ${selling_shares} shares of ${ticker}, You have ${shares} shares left and your cumulative return of the portfolio is ₹${result}`);
 
@@ -216,11 +206,9 @@ const sellTrade = async ({ ticker, selling_shares }) => {
 const cumulativeReturns = (final_value) => {
   
   let { avg_buy_price, shares } = final_value;
-  let current_price = 1500, sum = 0;
+  let current_price = 1500, sum = 0; //SETTING CURRENT PRICE TO RS 1500.
 
   sum += ((current_price - avg_buy_price) * shares);
-
-  console.log("The sum value", sum);
 
   return sum;
 };
@@ -235,8 +223,6 @@ router.get('/cumulative', async (_req, res) => {
     let data = await Promise.all(portfolio_data.map(r => cumulativeReturns(r)));
     
     data = +(data.reduce((sum, data) => sum + data, 0)).toFixed(2);
-
-    console.log("The final result", data);
 
     res.send({'Cumulative return success': data});
 
@@ -255,7 +241,6 @@ router.get('/holdings', async (_req, res) => {
     data = data[0];
     
     let { _id, total_shares, total_share_value } = data;
-    console.log("Yo", data);
 
     res.send({
       _id,
