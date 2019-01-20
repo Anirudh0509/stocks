@@ -16,4 +16,4 @@ IMPORTANT FEATURES -
 - Using Redis Caching system
 - Using Node cluster system - The cluster can handle a large volume of requests with multi-core systems. And automatically,   this will increase the performance of your server.
 - Using NODE.JS, EXPRESS.JS, MONGODB, REDIS, POSTMAN.
-- Two database tables portfolio & security_transactions that logs and enters every activity.
+- Two database tables portfolio that has all the securities & security_transactions that logs and enters every activity.
