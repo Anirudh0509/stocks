@@ -7,6 +7,7 @@ import cluster from 'cluster';
 
 // Count the machine's CPUs
 const numCPUs = require('os').cpus().length;
+const port = process.env.PORT || 3000;
 
 let router = require('./routes/portfolio');
 let app = express();
@@ -38,8 +39,8 @@ if (cluster.isMaster) {
 // FOR WORKER PROCESS
 } else {
 
-  app.listen(3000, () => {
-    console.log('Server starting @ port 3000');
+  app.listen(port, () => {
+    console.log(`Server starting @ port ${port}`);
   });
   console.log('Worker %d running!', cluster.worker.id);
 
